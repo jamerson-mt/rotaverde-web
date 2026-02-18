@@ -51,8 +51,8 @@ import { ref, reactive, computed, onBeforeUnmount } from 'vue'
 
 const estiloAtual = ref('normal')
 const vogaisData = [
-  { letra: 'A', palavra: 'abacaxi', img: '/img/att-vogais/abacaxi.png' },
-  { letra: 'E', palavra: 'elefante', img: '/img/att-vogais/elefante.png' },
+  { letra: 'A', palavra: 'algas', img: '/img/att-vogais/algas.png' },
+  { letra: 'E', palavra: 'estuario', img: '/img/att-vogais/estuario.png' },
   { letra: 'I', palavra: 'igreja', img: '/img/att-vogais/igreja.png' },
   { letra: 'O', palavra: 'ovo', img: '/img/att-vogais/ovo.png' },
   { letra: 'U', palavra: 'uva', img: '/img/att-vogais/uva.png' },
