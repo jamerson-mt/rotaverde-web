@@ -6,8 +6,8 @@ import { getUserData, removeUserData } from '@/utils/localStorageUtils';
 
 const router = useRouter();
 const user = getUserData();
-const isLoggedIn = ref(!!user); // 
-const username = ref(user?.userName || ''); //
+const isLoggedIn = ref(!!user);
+const username = ref(user?.userName || '');
 console.log("User data:", user);
 
 function goToHome() {
@@ -48,7 +48,7 @@ async function logout() {
       <div class="user" @click="falar('boasvindas', '', '#')">
         <img src="/public/img/capas/user2.png" />
       </div>
-      <span v-if="user.userName" class="username">{{ user.userName }}</span>
+      <span v-if="username" class="username">{{ username }}</span>
     </div>
     <div id="image" class="w-16 left-5" @click="goToHome">
       <img src="/public/img/iconesSustentabilidade/reciclagem.png" />
