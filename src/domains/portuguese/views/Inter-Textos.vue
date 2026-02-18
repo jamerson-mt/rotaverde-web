@@ -235,6 +235,18 @@ function resetAll() {
   Object.keys(placedStatus).forEach(k => delete placedStatus[Number(k)])
 }
 
+function readFullSentence() {
+  const currentEx = exercises[currentExerciseIndex.value]
+  let fullText = currentEx.text
+  
+  // Substituir cada {id} pela palavra correspondente
+  currentEx.words.forEach(word => {
+    fullText = fullText.replace(`{${word.id}}`, word.word)
+  })
+  
+  speakDescription(fullText)
+}
+
 onBeforeUnmount(() => {
   if (modalTimeout !== null) {
     clearTimeout(modalTimeout)
@@ -324,6 +336,14 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="actions">
+        <button class="btn btn-listen" @click="readFullSentence" title="Ouvir a frase completa">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11 5L6 9H2V15H6L11 19V5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M15.54 8.46C16.4774 9.39764 17.0039 10.6692 17.0039 11.995C17.0039 13.3208 16.4774 14.5924 15.54 15.53" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M19.07 4.93C20.9447 6.80528 21.9979 9.34836 21.9979 12C21.9979 14.6516 20.9447 17.1947 19.07 19.07" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Ouvir frase
+        </button>
         <button class="btn btn-primary" @click="checkAnswers">Verificar respostas</button>
         <!-- <button class="btn btn-secondary" @click="resetAll">Reiniciar</button> -->
       </div>
@@ -458,6 +478,8 @@ onBeforeUnmount(() => {
 .btn:focus { outline: 3px solid rgba(11,107,88,0.18); box-shadow: 0 4px 10px rgba(6,107,88,0.12) }
 .btn-primary { background: linear-gradient(180deg, #2e8b57); color: #fff; box-shadow: 0 6px 18px rgba(6,107,88,0.12) }
 .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(6, 245, 201, 0.16) }
+.btn-listen { background: linear-gradient(180deg, #4682b4, #3a6fa0); color: #fff; box-shadow: 0 6px 18px rgba(70,130,180,0.18) }
+.btn-listen:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(70,130,180,0.25) }
 .btn-secondary { background: transparent; color: #0b6b58; border: 2px solid rgba(11,107,88,0.14); }
 .btn-secondary:hover { background: rgba(11,107,88,0.04) }
 .status { margin-left:8px; font-weight:700; color:#0b6b58 }
