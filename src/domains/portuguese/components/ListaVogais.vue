@@ -51,11 +51,11 @@ import { ref, reactive, computed, onBeforeUnmount } from 'vue'
 
 const estiloAtual = ref('normal')
 const vogaisData = [
-  { letra: 'A', palavra: 'algas', img: '/img/att-vogais/algas.png' },
-  { letra: 'E', palavra: 'estuario', img: '/img/att-vogais/estuario.png' },
-  { letra: 'I', palavra: 'igreja', img: '/img/att-vogais/igreja.png' },
-  { letra: 'O', palavra: 'ovo', img: '/img/att-vogais/ovo.png' },
-  { letra: 'U', palavra: 'uva', img: '/img/att-vogais/uva.png' },
+  { letra: 'A', palavra: 'Algas', img: '/img/att-vogais/algas.png' },
+  { letra: 'E', palavra: 'Estuario', img: '/img/att-vogais/estuario.png' },
+  { letra: 'I', palavra: 'Igarapé', img: '/img/att-vogais/igarape.png' },
+  { letra: 'O', palavra: 'Oceano', img: '/img/att-vogais/oceano.png' },
+  { letra: 'U', palavra: 'Umidade', img: '/img/att-vogais/umidade.png' },
 ]
 const corBotao = ref('#007bff')
 const showCardModal = ref(false)
@@ -70,7 +70,7 @@ function playFlip() {
   isFlipping.value = false
   void document.body.offsetWidth
   isFlipping.value = true
-  setTimeout(() => { isFlipping.value = false }, 500)
+  setTimeout(() => { isFlipping.value = false }, 2000)
 }
 
 function onKeyDownCard(e) {

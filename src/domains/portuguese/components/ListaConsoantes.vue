@@ -3,27 +3,27 @@ import { ref, reactive, computed, onBeforeUnmount } from 'vue'
 
 const estiloAtual = ref('normal')
 const consoantesData = [
-  { letra: 'B', palavra: 'bola', img: '/img/att-consoantes/bola.png' },
-  { letra: 'C', palavra: 'caranguejo', img: '/img/att-consoantes/caranguejo.png' },
-  { letra: 'D', palavra: 'dado', img: '/img/att-consoantes/dado.png' },
-  { letra: 'F', palavra: 'flora', img: '/img/att-consoantes/flora.png' },
-  { letra: 'G', palavra: 'gato', img: '/img/att-consoantes/gato.png' },
-  { letra: 'H', palavra: 'helicóptero', img: '/img/att-consoantes/helicoptero.png' },
-  { letra: 'J', palavra: 'jangada', img: '/img/att-consoantes/jangada.png' },
-  { letra: 'K', palavra: 'kiwi', img: '/img/att-consoantes/kiwi.png' },
-  { letra: 'L', palavra: 'leão', img: '/img/att-consoantes/leao.png' },
-  { letra: 'M', palavra: 'manguezal', img: '/img/att-consoantes/manguezal.png' },
-  { letra: 'N', palavra: 'navio', img: '/img/att-consoantes/navio.png' },
-  { letra: 'P', palavra: 'peixes', img: '/img/att-consoantes/peixes.png' },
-  { letra: 'Q', palavra: 'quilombo', img: '/img/att-consoantes/quilombo.png' },
-  { letra: 'R', palavra: 'reciclagem', img: '/img/att-consoantes/reciclagem.png' },
-  { letra: 'S', palavra: 'sustentabilidade', img: '/img/att-consoantes/sustentabilidade.png' },
-  { letra: 'T', palavra: 'tartaruga', img: '/img/att-consoantes/tartaruga.png' },
-  { letra: 'V', palavra: 'vegetacao', img: '/img/att-consoantes/vegetacao.png' },
-  { letra: 'W', palavra: 'wesley', img: '/img/att-consoantes/wesley.png' },
-  { letra: 'X', palavra: 'xícara', img: '/img/att-consoantes/xicara.png' },
-  { letra: 'Y', palavra: 'yoga', img: '/img/att-consoantes/yoga.png' },
-  { letra: 'Z', palavra: 'zebra', img: '/img/att-consoantes/zebra.png' }
+  { letra: 'B', palavra: 'Bioma', img: '/img/att-consoantes/bioma.png' },
+  { letra: 'C', palavra: 'Caranguejo', img: '/img/att-consoantes/caranguejo.png' },
+  { letra: 'D', palavra: 'Dendê', img: '/img/att-consoantes/dende.png' },
+  { letra: 'F', palavra: 'Flora', img: '/img/att-consoantes/flora.png' },
+  { letra: 'G', palavra: 'Gaiamum', img: '/img/att-consoantes/gaiamum.png' },
+  { letra: 'H', palavra: 'Habitat', img: '/img/att-consoantes/habitat.png' },
+  { letra: 'J', palavra: 'Jangada', img: '/img/att-consoantes/jangada.png' },
+  { letra: 'K', palavra: 'Kiwi', img: '/img/att-consoantes/kiwi.png' },
+  { letra: 'L', palavra: 'Litoral', img: '/img/att-consoantes/litoral.png' },
+  { letra: 'M', palavra: 'Manguezal', img: '/img/att-consoantes/manguezal.png' },
+  { letra: 'N', palavra: 'Nascente', img: '/img/att-consoantes/nascente.png' },
+  { letra: 'P', palavra: 'Peixe-Boi', img: '/img/att-consoantes/peixe-boi.png' },
+  { letra: 'Q', palavra: 'Quilombo', img: '/img/att-consoantes/quilombo.png' },
+  { letra: 'R', palavra: 'Reciclagem', img: '/img/att-consoantes/reciclagem.png' },
+  { letra: 'S', palavra: 'Sustentabilidade', img: '/img/att-consoantes/sustentabilidade.png' },
+  { letra: 'T', palavra: 'Tartaruga', img: '/img/att-consoantes/tartaruga.png' },
+  { letra: 'V', palavra: 'Vegetação', img: '/img/att-consoantes/vegetacao.png' },
+  { letra: 'W', palavra: 'WhatsApp', img: '/img/att-consoantes/whatsapp.png' },
+  { letra: 'X', palavra: 'Xícara', img: '/img/att-consoantes/xicara.png' },
+  { letra: 'Y', palavra: 'YouTube', img: '/img/att-consoantes/youtube.png' },
+  { letra: 'Z', palavra: 'Zona estuarina', img: '/img/att-consoantes/zona-estuarina.png' }
 ]
 const corBotao = ref('#28a745')
 
@@ -58,7 +58,7 @@ function playFlip() {
   isFlipping.value = false
   void document.body.offsetWidth
   isFlipping.value = true
-  setTimeout(() => { isFlipping.value = false }, 500)
+  setTimeout(() => { isFlipping.value = false }, 2000)
 }
 
 function onKeyDownCard(e) {
