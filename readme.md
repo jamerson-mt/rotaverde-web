@@ -42,6 +42,8 @@ Contributions são bem-vindas! Abra uma issue ou envie um pull request.
 
 [MIT License]
 
-## 📞 Contato
+## 📞 Contatos
 
 [jjamersonmt@gmail.com] 
+[thomazrodrigues668@gmail.com]
+
