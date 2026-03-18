@@ -46,4 +46,5 @@ Contributions são bem-vindas! Abra uma issue ou envie um pull request.
 
 [jjamersonmt@gmail.com] 
 [thomazrodrigues668@gmail.com]
+[caiordm08@gmail.com]
 
