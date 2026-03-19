@@ -16,12 +16,16 @@ const props = defineProps<{
 }>();
 
 const mostrarPopup = ref(false);
-const listaVisivel = ref(true);
+const mostrarLista = ref(false);
 const alunoEditando = ref<Aluno | null>(null);
 const mostrarEditarPopup = ref(false);
 
 function adicionarAluno() {
   mostrarPopup.value = true;
+}
+
+function mostrarListaAlunos() {
+  mostrarLista.value = true;
 }
 
 
@@ -43,6 +47,7 @@ async function removerAluno(id: number) {
 }
 
 function editarAluno(aluno: Aluno) {
+  mostrarLista.value = false;
   alunoEditando.value = { ...aluno };
   mostrarEditarPopup.value = true;
 }
@@ -77,32 +82,22 @@ async function salvarEdicao() {
     mostrarEditarPopup.value = false;
   }
 }
-console.log(props.alunos);
 </script>
 
 <template>
   <div class="alunos-lista">
     <div class="title">
-      <h2>Lista de Alunos</h2>
-      
-    </div>
-    <div v-if="listaVisivel" class="alunos-container">
-      <ul>
-        <li v-for="(aluno, index) in alunos" :key="index">
-          <strong>{{ aluno.userName }}</strong>
-         <div class="button-user"> <button @click="removerAluno(aluno.id)" class="remove-button">Remover</button>
-          <button @click="editarAluno(aluno)" class="edit-button">Editar</button></div>
-        </li>
-      </ul>
     </div>
     <div class="buttons-container">
+      <button @click="mostrarListaAlunos" class="show-button">Mostrar Lista</button>
       <button @click="adicionarAluno" class="add-button">Adicionar Aluno</button>
     </div>
+
     <div v-if="mostrarPopup" class="popup-overlay">
       <AdicionarAluno />
     </div>
     <div v-if="mostrarEditarPopup" class="popup-overlay">
-      <div class="popup">
+      <div class="popup" style="z-index: 1000;">
         <h3>Editar Aluno</h3>
         <label>
           Nome:
@@ -117,6 +112,25 @@ console.log(props.alunos);
           <button @click="mostrarEditarPopup = false" class="cancel-button">
             Cancelar
           </button>
+        </div>
+      </div>
+    </div>
+    <div v-if="mostrarLista" class="popup-overlay">
+      <div class="popup lista-popup">
+        <h3>Lista de Alunos</h3>
+        <div class="alunos-container">
+          <ul>
+            <li v-for="(aluno, index) in alunos" :key="index">
+              <strong>{{ aluno.userName }}</strong>
+              <div class="button-user">
+                <button @click="removerAluno(aluno.id)" class="remove-button"></button>
+                <button @click="editarAluno(aluno)" class="edit-button"></button>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="popup-buttons">
+          <button @click="mostrarLista = false" class="cancel-button">Minimizar</button>
         </div>
       </div>
     </div>
@@ -137,17 +151,27 @@ console.log(props.alunos);
 
 .alunos-container {
   overflow-y: auto;
-  max-height: 300px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #f9f9f9;
-  padding: 15px;
+  max-height: 400px;
+  border: 1px solid #e1e8ed;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 20px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 strong {
-  width: 150px;
+  flex: 1;
   font-weight: 600;
-  color: #34495e;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+}
+
+strong::before {
+  content: "👤";
+  margin-right: 10px;
+  font-size: 1.2rem;
 }
 
 .title {
@@ -174,17 +198,19 @@ li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 18px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  margin-bottom: 10px;
-  background-color: #ffffff;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  padding: 15px 20px;
+  border: 1px solid #e1e8ed;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 li:hover {
-  background-color: #f4f4f4;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
 }
 
 .buttons-container {
@@ -193,8 +219,7 @@ li:hover {
   gap: 1rem;
 }
 .add-button,
-
-.toggle-button {
+.show-button {
   padding: 10px 15px;
   font-size: 1rem;
   color: #ffffff;
@@ -206,43 +231,68 @@ li:hover {
 }
 
 .add-button:hover,
-
-.toggle-button:hover {
+.show-button:hover {
   background-color: #0056b3;
 }
 
 
 .remove-button {
-  background-color: #e74c3c;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.remove-button::before {
+  content: "🗑️";
+  margin-right: 5px;
 }
 
 .remove-button:hover {
-  background-color: #c0392b;
+  background: linear-gradient(135deg, #ee5a52 0%, #dc4545 100%);
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(238, 90, 82, 0.3);
 }
 
 .edit-button {
-  background-color: #fcc308;
+  background: linear-gradient(135deg, #ffd93d 0%, #ffb347 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.edit-button::before {
+  content: "✏️";
+  margin-right: 5px;
 }
 
 .edit-button:hover {
-  background-color: #138496;
+  background: linear-gradient(135deg, #ffb347 0%, #ff8c00 100%);
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(255, 179, 71, 0.3);
 }
 .button-user{
   display: flex;
   flex-direction: row;
-  width: 150px;
   gap: 0.5rem;
 } 
 
 .remove-button,
 .edit-button {
-  width: 100px;
+  width: auto;
   text-align: center;
-  padding: 8px 12px;
-  font-size: 0.9rem;
-  color: #ffffff;
-  border: none;
-  border-radius: 4px;
 }
 
 .popup-overlay {
@@ -265,6 +315,12 @@ li:hover {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
   max-width: 400px;
   width: 100%;
+}
+
+.lista-popup {
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
 .popup h3 {

@@ -22,7 +22,7 @@
         <h2>Alunos</h2>
         <ul v-if="turma.alunos && turma.alunos.length" class="alunos-list">
           <li v-for="aluno in turma.alunos" :key="aluno.id" class="aluno-item">
-            {{ aluno.nome }}
+            {{ aluno.userName }}
             <button @click="removerAluno(aluno.id)" class="remove-btn">Remover</button>
           </li>
         </ul>
@@ -31,7 +31,7 @@
           <label for="novoAluno">Adicionar Aluno:</label>
           <select id="novoAluno" v-model="novoAlunoId" class="select-field">
             <option v-for="aluno in alunosDisponiveis" :key="aluno.id" :value="aluno.id">
-              {{ aluno.nome }}
+              {{ aluno.userName }}
             </option>
           </select>
           <p v-if="!alunosDisponiveis.length" class="no-data">
@@ -57,6 +57,7 @@ export default {
         nome: "",
         anoLetivo: "",
         alunos: [], // Alunos da turma atual
+        id: null, // ID da turma para facilitar as operações
       },
       alunosDisponiveis: [], // Alunos sem turma
       novoAlunoId: null,
@@ -70,7 +71,7 @@ export default {
           console.error("ID da turma não encontrado na URL");
           return;
         }
-
+        console.log("ID da turma extraído da URL:", );
         // Busca os dados da turma
         const turmaResponse = await fetch(`${API_URL}turma/${turmaId}`);
         if (!turmaResponse.ok) {
@@ -89,69 +90,67 @@ export default {
         }
         const alunos = await alunosResponse.json();
         console.log("Alunos buscados:", alunos);
+        //faca o filtr de nao pegr os que tem roles
+        const alunosSemRoles = alunos.filter((aluno) => !aluno.roles || aluno.roles.length === 0);
 
         // Filtra os alunos que pertencem à turma atual
-        this.turma.alunos = alunos.filter((aluno) => aluno.turmaId == turmaId);
+        this.turma.alunos = alunosSemRoles.filter((aluno) => aluno.turmaId == turmaId);
         console.log("Alunos na turma:", this.turma.alunos);
 
         // Filtra os alunos disponíveis (sem turma ou com turmaId nulo)
-        this.alunosDisponiveis = alunos.filter((aluno) => !aluno.turmaId || aluno.turmaId === null);
+        this.alunosDisponiveis = alunosSemRoles.filter((aluno) => !aluno.turmaId || aluno.turmaId === null);
         console.log("Alunos disponíveis para adicionar:", this.alunosDisponiveis);
       } catch (error) {
         console.error("Erro ao carregar dados:", error);
       }
     },
     async updateTurma() {
-      try {
-        const turmaId = this.turma.id;
-        if (!turmaId) {
-          console.error("ID da turma não encontrado ou inválido");
+  try {
+    const turmaId = this.turma.id;
+    if (!turmaId) {
+      console.error("ID da turma não encontrado ou inválido");
+      return;
+    }
+
+    // Criamos o payload completo, incluindo os usuários (alunos)
+    const payload = {
+      id: turmaId,
+      nome: this.turma.nome,
+      anoLetivo: this.turma.anoLetivo,
+      turno: this.turma.turno, // Não esqueça do turno que é 'required' no C#
+      criadorId: this.turma.criadorId, 
+      // Mapeamos os alunos para o formato que o C# espera (lista de objetos com ID)
+      usuarios: this.turma.alunos.map(aluno => ({
+        id: aluno.id
+      }))
+    };
+
+    console.log("Enviando payload único para atualizar turma e alunos:", payload);
+
+    const response = await fetch(`${API_URL}turma/${turmaId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text(); // text() é mais seguro se o retorno for vazio
+      console.error("Erro ao salvar alterações:", errorText);
+      throw new Error("Erro ao salvar alterações da turma");
+    }
+
+    console.log("Turma e vínculos de alunos atualizados com sucesso!");
+    
+  } catch (error) {
+    console.error("Falha na atualização:", error);
+  }
+},
+    async updateAlunosTurma() {
+      try {        if (!this.turma.alunos.length) {
+          console.log("Nenhum aluno para atualizar");
           return;
-        }
-
-        const payload = {
-          id: turmaId,
-          nome: this.turma.nome,
-          anoLetivo: this.turma.anoLetivo,
-        };
-
-        console.log("Enviando payload para atualizar turma:", payload);
-
-        const response = await fetch(`${API_URL}turma/${turmaId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error("Erro ao salvar alterações da turma:", errorData);
-          throw new Error("Erro ao salvar alterações da turma");
-        }
-
-        console.log("Alterações da turma salvas com sucesso");
-
-        // Atualizar turmaId dos alunos associados
-        for (const aluno of this.turma.alunos) {
-          const alunoPayload = {
-            id: aluno.id,
-            nome: aluno.nome,
-            idade : aluno.idade,
-            turmaId: turmaId,
-          };
-          const alunoResponse = await fetch(`${API_URL}user/${aluno.id}`, {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(alunoPayload),
-          });
-
-          if (!alunoResponse.ok) {
-            throw new Error(`Erro ao atualizar turmaId do aluno ${aluno.id}`);
-          }
         }
 
         console.log("TurmaId dos alunos atualizados com sucesso");

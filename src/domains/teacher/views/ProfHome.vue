@@ -51,7 +51,12 @@ const fetchUsers = async () => {
     if (!response.ok) {
       throw new Error("Erro ao buscar usuários");
     }
-    alunos.value = await response.json(); // Atualiza a lista de usuários
+    const allUsers = await response.json();
+    // Filtrar apenas usuários sem roles (alunos)
+    alunos.value = allUsers.filter(user => 
+      !user.roles || user.roles.length === 0
+    );
+    console.log("Alunos filtrados:", alunos.value); // Log para verificar os alunos filtrados
   } catch (error) {
     console.error("Erro ao carregar usuários:", error);
   }
@@ -65,6 +70,7 @@ const fetchTurmas = async () => {
       throw new Error("Erro ao buscar turmas");
     }
     turmas.value = await response.json();
+    console.log("Turmas carregadas:", turmas.value); // Log para verificar as turmas carregadas
   } catch (error) {
     console.error("Erro ao carregar turmas:", error);
   }
