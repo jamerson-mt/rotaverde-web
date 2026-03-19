@@ -30,3 +30,19 @@ npm-debug.log*
 /platforms
 /plugins
 /www
+
+# Mobile (Capacitor/Ionic)
+android/
+ios/
+
+# Logs e Cache
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.eslintcache
+
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.ntvs*

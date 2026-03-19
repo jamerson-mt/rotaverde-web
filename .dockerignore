@@ -1,0 +1,8 @@
+node_modules
+dist
+android
+ios
+.git
+.gitignore
+Dockerfile
+.dockerignore
