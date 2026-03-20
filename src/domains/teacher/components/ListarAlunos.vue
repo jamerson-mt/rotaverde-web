@@ -10,10 +10,10 @@
     </ul>
     <div class="selecionar-alunos">
       <h2>Alunos Selecionados</h2>
-      <ul>
+      <ul >
         <li v-if="!selectedStudents.length">Nenhum aluno selecionado.</li>
-        <li v-for="student in selectedStudents" :key="student.id">
-          {{ student.userName }}
+        <li v-for="student in selectedStudents" :key="student.id" >
+          <p>{{ student.userName }}</p><button @click="deselectStudent(student)" id="deselected-student" >Remover</button>
         </li>
       </ul>
       <button v-if="selectedStudents.length" @click="finalizeSelection">Finalizar</button>
@@ -42,9 +42,9 @@ const fetchStudents = async () => {
     checkedStudents.value = await response.json();
     // Filtra os alunos que já estão na turma e tem roles
     checkedStudents.value = checkedStudents.value.filter(
-      (student) =>
-        !student.roles.includes("professor") && !student.turmaId); // Filtra alunos que já estão na turma
-        console.log("Alunos na turma:", checkedStudents.value);
+      (student) => !student.roles.includes("professor") && !student.turmaId
+    ); // Filtra alunos que já estão na turma
+    console.log("Alunos na turma:", checkedStudents.value);
   } catch (error) {
     console.error("Erro ao buscar alunos:", error);
   }
@@ -56,7 +56,12 @@ const selectStudent = (student) => {
     checkedStudents.value = checkedStudents.value.filter((s) => s.id !== student.id);
   }
 };
-
+const deselectStudent = (student) => {
+  selectedStudents.value = selectedStudents.value.filter((s) => s.id !== student.id);
+  if (!checkedStudents.value.includes(student)) {
+    checkedStudents.value.push(student);
+  }
+};
 const finalizeSelection = async () => {
   try {
     const updates = selectedStudents.value.map((student) => ({
@@ -82,13 +87,13 @@ const finalizeSelection = async () => {
 
     alert("Alunos atualizados com sucesso!");
     selectedStudents.value = [];
-    fetchStudents();
+    // voltar para a /professor
+    window.location.href = "/professor";
   } catch (error) {
     console.error("Erro ao finalizar seleção:", error);
     alert("Erro ao finalizar seleção. Verifique o console.");
   }
 };
-
 
 onMounted(fetchStudents);
 </script>
@@ -104,6 +109,17 @@ onMounted(fetchStudents);
   border-radius: 8px;
   border: 1px solid #ccc;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+#deselected-student {
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+tdeselected-student:hover {
+  background-color: #c0392b;
 }
 
 h2 {
