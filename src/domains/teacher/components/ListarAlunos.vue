@@ -2,9 +2,9 @@
   <div class="listar-alunos">
     <h2>Listagem de Alunos</h2>
     <ul>
-      <li v-if="!unallocatedStudents.length">Nenhum aluno disponível para seleção.</li>
-      <li v-for="student in unallocatedStudents" :key="student.id">
-        {{ student.nome }}
+      <li v-if="props.checkedStudents">Nenhum aluno disponível para seleção.</li>
+      <li v-for="student in checkedStudents" :key="student.id">
+        {{ student.userName }}
         <button @click="selectStudent(student)">Selecionar</button>
       </li>
     </ul>
@@ -13,84 +13,88 @@
       <ul>
         <li v-if="!selectedStudents.length">Nenhum aluno selecionado.</li>
         <li v-for="student in selectedStudents" :key="student.id">
-          {{ student.value }}
+          {{ student.userName }}
         </li>
       </ul>
-      <button v-if="selectedStudents.length" @click="finalizeSelection">
-        Finalizar
-      </button>
+      <button v-if="selectedStudents.length" @click="finalizeSelection">Finalizar</button>
     </div>
   </div>
 </template>
 
 <script setup>
-
 const props = defineProps({
   classId: {
     type: Number,
-    required: true
-  }
+    required: true,
+  },
 });
-import { ref, computed, onMounted } from 'vue';
+import { ref, onMounted } from "vue";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const students = ref([]);
 const selectedStudents = ref([]);
+const checkedStudents = ref([]);
 
 const fetchStudents = async () => {
   try {
     const response = await fetch(`${API_URL}user`);
-    if (!response.ok) throw new Error('Erro ao buscar alunos');
-    students.value = await response.json();
-    console.log('Alunos carregados:', students.value);
+    if (!response.ok) throw new Error("Erro ao buscar alunos");
+    checkedStudents.value = await response.json();
+    // Filtra os alunos que já estão na turma e tem roles
+    checkedStudents.value = checkedStudents.value.filter(
+      (student) =>
+        !student.roles.includes("professor") && !student.turmaId); // Filtra alunos que já estão na turma
+        console.log("Alunos na turma:", checkedStudents.value);
   } catch (error) {
-    console.error('Erro ao buscar alunos:', error);
+    console.error("Erro ao buscar alunos:", error);
   }
 };
-
-const unallocatedStudents = computed(() =>
-  students.value.filter(student => !student.turmaId)
-);
 
 const selectStudent = (student) => {
   if (!selectedStudents.value.includes(student)) {
     selectedStudents.value.push(student);
-    students.value = students.value.filter(s => s.id !== student.id);
+    checkedStudents.value = checkedStudents.value.filter((s) => s.id !== student.id);
   }
 };
 
 const finalizeSelection = async () => {
   try {
-    const updates = selectedStudents.value.map(student => ({
-      ...student,
-      turmaId: props.classId, // Atualizado para usar classId
+    const updates = selectedStudents.value.map((student) => ({
+      id: student.id.toString(),
+      turmaId: props.classId.toString(),
     }));
 
     for (const student of updates) {
+      // Agora enviamos 'student' (o objeto individual) e não 'updates' (o array)
       const response = await fetch(`${API_URL}user/${student.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(student),
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(student), // CORRIGIDO: enviando o objeto individual
+        credentials: "include",
       });
-      if (!response.ok) throw new Error(`Erro ao atualizar aluno ${student.nome}`);
+
+      if (!response.ok) {
+        const errorData = await response.json(); // Tenta ler o erro do servidor
+        console.error(`Erro no aluno ${student.id}:`, errorData);
+        throw new Error(`Erro ao atualizar aluno ${student.id}`);
+      }
     }
 
-    alert('Alunos atualizados com sucesso!');
-    selectedStudents.value = []; // Limpa a lista de selecionados após a atualização
-    fetchStudents(); // Recarrega a lista de alunos
+    alert("Alunos atualizados com sucesso!");
+    selectedStudents.value = [];
+    fetchStudents();
   } catch (error) {
-    console.error('Erro ao finalizar seleção:', error);
-    alert('Erro ao finalizar seleção. Tente novamente.');
+    console.error("Erro ao finalizar seleção:", error);
+    alert("Erro ao finalizar seleção. Verifique o console.");
   }
 };
+
 
 onMounted(fetchStudents);
 </script>
 
 <style scoped>
-
-#username{
+#username {
   color: red;
   z-index: 1000;
 }

@@ -2,7 +2,7 @@
 import ListarAlunos from "../components/ListarAlunos.vue";
 import TitleCategories from "@/domains/user/components/TitleCategories.vue";
 import { getUserId } from "@/utils/localStorageUtils";
- 
+ import { ref } from "vue";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default {
@@ -16,9 +16,9 @@ export default {
       selectedStudents: [],
       students: [],
       classData: {
-        name: "",
-        year: null, // Alterado para número
-        teacher: "",
+        name: "EJA",
+        anoLetivo: 2026, // Alterado para número
+        turno: 0, // Adicionado para armazenar o turno selecionado
       },
       classId: null, // Adicionado para armazenar o ID da turma criada
     };
@@ -56,8 +56,10 @@ export default {
     },
     async createClass() {
       if (this.step === 1) {
+
         // Validação dos dados antes de enviar a requisição
-        if (!this.classData.name || !this.classData.year) {
+        if (!this.classData.name || !this.classData.anoLetivo) { // Verifica se o turno também foi selecionado
+          console.warn("Dados incompletos:", this.classData); 
           alert("Por favor, preencha todos os campos obrigatórios.");
           return;
         }
@@ -70,9 +72,9 @@ export default {
 
         try {
           const payload = {
-            nome: this.classData.name.trim(),
-            anoLetivo: this.classData.year,
-            turno:0, // Exemplo de valor fixo para turno
+            nome: this.classData.name, // Remove espaços extras
+            anoLetivo: this.classData.anoLetivo,
+            turno: this.classData.turno, // Converte para string se necessário
             criadorId: creatorId,
           };
 
@@ -94,8 +96,7 @@ export default {
           const data = await response.json();
           this.classId = data.id; // Armazena o ID da turma criada
           window.alert("Turma criada com sucesso! ID: " + data.id);
-
-          this.nextStep();
+          this.step++; // Avança para a próxima etapa
         } catch (error) {
           console.error("Erro ao criar turma:", error);
           alert("Ocorreu um erro ao criar a turma. Tente novamente.");
@@ -128,8 +129,12 @@ export default {
     <div v-if="step === 1">
       <form @submit.prevent="createClass()">
         <input v-model="classData.name" placeholder="Nome da Turma" required />
-        <input v-model.number="classData.year" placeholder="Ano Letivo" type="number" required />
-       
+        <input v-model.number="classData.anoLetivo" placeholder="Ano Letivo" type="number" required />
+        <select v-model.number="classData.turno" required class="turno-select" >
+          <option value="0">Matutino</option>
+          <option value="1">Vespertino</option>
+          <option value="2">Noturno</option>
+        </select>
         <button type="submit">Próximo</button>
       </form>
     </div>
@@ -149,6 +154,13 @@ export default {
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow-y: scroll;
+}
+.turno-select{
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  
 }
 h1 {
   color: #2c3e50;
