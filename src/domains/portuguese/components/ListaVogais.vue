@@ -118,7 +118,7 @@ function falar(letra, palavra) {
     letra.toUpperCase() === "E" ? "É" : letra.toUpperCase() === "O" ? "Ó" : letra;
   const utterance = new SpeechSynthesisUtterance(`${letraTratada} de ${palavra}`);
   utterance.lang = "pt-BR";
-  utterance.rate = 0.8; // Velocidade levemente reduzida para clareza
+  utterance.rate = 0.7; // Velocidade levemente reduzida para clareza
   utterance.pitch = 1.1; // Um tom levemente mais agudo costuma soar menos "metálico"
 
   // 2. Tenta encontrar uma voz de alta qualidade (Google ou Microsoft)
