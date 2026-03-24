@@ -13,6 +13,9 @@ function login() {
   window.location.href = "/login";
 }
 
+const data = getUserData();
+const isLogin = data?.userName ?? "";
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 async function logout() {
@@ -65,7 +68,7 @@ async function logout() {
       </div>
     </div>
     <!-- Botão de login/logout -->
-    <button v-if="!isLoggedIn" class="login-button" @click="login">Login</button>
+    <button v-if="!isLogin" class="login-button" @click="login">Login</button>
     <button v-else class="login-button" @click="logout">Logout</button>
   </div>
 </template>
