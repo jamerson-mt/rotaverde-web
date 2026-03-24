@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onBeforeUnmount } from "vue";
+import TitleCategories from "@/domains/user/components/TitleCategories.vue";
 import Header from "@/domains/reasoning/components/HeaderTop.vue";
-import {   exercises } from "../services/attTextos";
+import { exercises } from "../services/attTextos";
 
 const currentExerciseIndex = ref(0);
 const rawText = ref(exercises[currentExerciseIndex.value].text);
@@ -306,6 +307,7 @@ onBeforeUnmount(() => {
   <Header />
   <div class="inter-textos">
     <div class="container">
+      <TitleCategories title="voltar" route="/att/roadMap" />
       <h1 class="title">Montando sentido</h1>
       <h2 class="subtitle">Complete o texto com as palavras</h2>
     </div>
