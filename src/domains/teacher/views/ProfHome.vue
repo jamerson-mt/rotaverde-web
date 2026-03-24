@@ -53,7 +53,7 @@ const fetchUsers = async () => {
     }
     const allUsers = await response.json();
     // Filtrar apenas usuários sem roles (alunos)
-    alunos.value = allUsers.filter(user => 
+    alunos.value = allUsers.filter((user: { roles: string | any[]; }) => 
       !user.roles || user.roles.length === 0
     );
     console.log("Alunos filtrados:", alunos.value); // Log para verificar os alunos filtrados
