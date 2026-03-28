@@ -1,47 +1,41 @@
 <template>
   <div class="lista-vogais">
-    <h2>Vogais</h2>
-    <div class="controles-case"></div>
+    <h2 class="title-main">Vogais</h2>
+    
+    <div class="controles-case">
+      <button 
+        class="btn-case" 
+        :class="{ ativo: estiloAtual === 'normal' }"
+        @click="mudarParaMaiuscula"
+      >
+        ABC
+      </button>
 
-    <ul>
+      <button 
+        class="btn-case" 
+        :class="{ ativo: estiloAtual === 'lowercase' }"
+        @click="mudarParaMinuscula"
+      >
+        abc
+      </button>
+    </div>
+
+    <ul class="grid-vogais">
       <li v-for="vogal in vogaisFormatadas" :key="vogal">
         <button
+          class="btn-vogal"
           @click="openCard(vogal)"
-          :style="{
-            fontStyle: estiloAtual === 'italic' ? 'italic' : 'normal',
-            backgroundColor: '#f0f8ff',
-            color: '#000000',
-            fontSize: '80px',
-          }"
+          :style="{ fontStyle: estiloAtual === 'italic' ? 'italic' : 'normal' }"
         >
           {{ vogal }}
         </button>
       </li>
     </ul>
-    <button
-      class="btn-case"
-      :class="{ ativo: estiloAtual === 'normal' }"
-      @click="mudarParaMaiuscula"
-    >
-      ABC (MAIÚSCULA)
-    </button>
-
-    <button
-      class="btn-case"
-      :class="{ ativo: estiloAtual === 'lowercase' }"
-      @click="mudarParaMinuscula"
-    >
-      abc (minúscula)
-    </button>
 
     <div v-if="showCardModal" class="card-overlay" @click.self="closeCard">
-      <div
-        class="card-modal"
-        role="dialog"
-        aria-modal="true"
-        :aria-label="`Carta ${modalData.letra}`"
-      >
-        <button class="card-close" @click="closeCard" aria-label="Fechar">×</button>
+      <div class="card-modal">
+        <button class="card-close" @click="closeCard">×</button>
+        
         <div class="card-corner top-left">{{ modalData.letra }}</div>
         <div class="card-corner bottom-right">{{ modalData.letra }}</div>
 
@@ -49,42 +43,238 @@
           class="card-flip"
           :class="{ flipped: isFlipping }"
           @click="playFlip"
-          role="button"
-          tabindex="0"
         >
           <div class="card-face card-front">
-            <div class="card-inner">
-              <div class="card-left">
-                <div class="card-letter">{{ modalData.letra }}</div>
-              </div>
-              <div class="card-right">
+            <div class="card-inner-content">
+              <div class="card-letter">{{ modalData.letra }}</div>
+              <div class="card-info">
                 <h3 class="card-title">{{ modalData.palavra }}</h3>
-                <p class="card-text">
-                  Exemplo: <strong>{{ modalData.palavra }}</strong>
-                </p>
+                <p>Clique para ver a foto!</p>
               </div>
             </div>
           </div>
 
           <div class="card-face card-back">
             <div class="back-image-wrap">
-              <img :src="modalData.img" :alt="modalData.palavra" loading="lazy" />
+              <img :src="modalData.img" :alt="modalData.palavra" />
+              <div class="back-caption">{{ modalData.palavra }}</div>
             </div>
-            <div class="back-caption">{{ modalData.palavra }}</div>
           </div>
         </div>
 
         <div class="card-actions">
           <button class="card-voice" @click="falar(modalData.letra, modalData.palavra)">
-            Ouvir novamente
+            <span>🔊</span> Ouvir
           </button>
-          <button class="card-ok" @click="closeCard">Fechar</button>
+          <button class="card-ok" @click="closeCard">Pronto!</button>
         </div>
       </div>
     </div>
   </div>
-</template>
+</template><style scoped>
+/* Container Principal */
+.lista-vogais {
+  text-align: center;
+  background: #f0fdfa;
+  border-radius: 30px;
+  padding: 40px 20px;
+  max-width: 650px;
+  margin: 20px auto;
+  border: 2px solid #ccfbf1;
+  box-shadow: 0 15px 35px rgba(11, 107, 88, 0.1);
+}
 
+.title-main {
+  color: #0f766e;
+  font-size: 2.2rem;
+  margin-bottom: 30px;
+  font-weight: 900;
+}
+
+/* Controles de Tamanho (ABC / abc) */
+.controles-case {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.btn-case {
+  padding: 12px 28px;
+  border: 2px solid #14b8a6;
+  border-radius: 50px;
+  background: white;
+  color: #14b8a6;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-case.ativo {
+  background: #14b8a6;
+  color: white;
+  box-shadow: 0 5px 15px rgba(20, 184, 166, 0.4);
+}
+
+/* Grid das Vogais */
+.grid-vogais {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  list-style: none;
+  padding: 0;
+  justify-content: center;
+}
+
+.btn-vogal {
+  width: 110px;
+  height: 110px;
+  font-size: 70px !important;
+  font-weight: 900;
+  cursor: pointer;
+  background: white;
+  color: #0f766e;
+  border: none;
+  border-radius: 24px;
+  box-shadow: 0 6px 0 #cbd5e1, 0 8px 15px rgba(0,0,0,0.05);
+  transition: all 0.2s;
+}
+
+.btn-vogal:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 0 #cbd5e1, 0 12px 20px rgba(0,0,0,0.1);
+}
+
+.btn-vogal:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #cbd5e1;
+}
+
+/* --- ESTILO DA CARTA (MODAL) --- */
+.card-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 107, 88, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.card-modal {
+  background: white;
+  width: 340px;
+  height: 480px;
+  border-radius: 30px;
+  position: relative;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  perspective: 1000px; /* Necessário para o efeito 3D */
+}
+
+.card-flip {
+  width: 100%;
+  height: 80%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.card-flip.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  background: #ffffff;
+}
+
+.card-letter {
+  font-size: 150px;
+  font-weight: 900;
+  color: #0f766e;
+  line-height: 1;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  color: #14b8a6;
+  margin-top: 10px;
+}
+
+.back-image-wrap img {
+  max-width: 220px;
+  max-height: 220px;
+  border-radius: 15px;
+  object-fit: cover;
+}
+
+.back-caption {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #0f766e;
+  margin-top: 15px;
+}
+
+/* Botões de Ação no Modal */
+.card-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  justify-content: center;
+}
+
+.card-voice, .card-ok {
+  padding: 12px 20px;
+  border-radius: 15px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-voice { background: #0ea5e9; color: white; }
+.card-ok { background: #10b981; color: white; }
+
+.card-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 30px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.card-corner {
+  position: absolute;
+  font-size: 24px;
+  font-weight: 900;
+  color: #14b8a6;
+  opacity: 0.3;
+}
+.top-left { top: 20px; left: 20px; }
+.bottom-right { bottom: 20px; right: 20px; transform: rotate(180deg); }
+</style>
 <script setup>
 import { ref, reactive, computed, onBeforeUnmount } from "vue";
 
@@ -103,25 +293,25 @@ const isFlipping = ref(false);
 
 // Função para falar e mudar para Maiúscula
 function mudarParaMaiuscula() {
-  if (estiloAtual.value === 'normal') return; // Já está ativo
-  
+  if (estiloAtual.value === "normal") return; // Já está ativo
+
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance("Mudar para letras maiúsculas");
   utterance.lang = "pt-BR";
   window.speechSynthesis.speak(utterance);
-  
+
   estiloAtual.value = "normal";
 }
 
 // Função para falar e mudar para Minúscula
 function mudarParaMinuscula() {
-  if (estiloAtual.value === 'lowercase') return; // Já está ativo
-  
+  if (estiloAtual.value === "lowercase") return; // Já está ativo
+
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance("Mudar para letras minúsculas");
   utterance.lang = "pt-BR";
   window.speechSynthesis.speak(utterance);
-  
+
   estiloAtual.value = "lowercase";
 }
 const vogaisFormatadas = computed(() =>
@@ -226,333 +416,3 @@ onBeforeUnmount(() => {
   window.removeEventListener("keydown", onKeyDownCard);
 });
 </script>
-
-<style scoped>
-.lista-vogais {
-  text-align: center;
-  background: #0b6b58;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  max-width: 600px;
-  margin: auto;
-}
-.controles-case {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 25px;
-}
-
-.btn-case {
-  padding: 12px 20px;
-  border: 2px solid #0b6b58;
-  border-radius: 12px;
-  background: #0b6b58;
-  color: #0b6b58;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 1rem;
-}
-
-.btn-case.ativo {
-  background: #0b6b58;
-  color: white;
-  box-shadow: 0 4px 12px rgba(11, 107, 88, 0.3);
-  transform: scale(1.05);
-}
-
-.btn-case:hover:not(.ativo) {
-  background: #f0fdf4;
-}
-.lista-vogais ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  list-style: none;
-  padding: 0;
-  justify-content: center;
-}
-
-.lista-vogais li {
-  margin: 0;
-}
-
-.lista-vogais button {
-  font-size: 1.5rem;
-  padding: 10px 20px;
-  cursor: pointer;
-  color: #ffffff;
-  border: none;
-  border-radius: 5px;
-  transition: background 0.3s;
-}
-
-.lista-vogais button:hover {
-  opacity: 0.9;
-}
-
-.btn-toggle-case {
-  position: relative;
-  z-index: 1;
-  overflow: visible;
-}
-.btn-echo::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%) scale(1);
-  width: 110%;
-  height: 110%;
-  border-radius: 999px;
-  background: transparent;
-  box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.02),
-    0 0 0 0 var(--btn-color, rgba(255, 255, 255, 0.12));
-  z-index: 0;
-  opacity: 0;
-  pointer-events: none;
-  animation: echoPulse 1.2s cubic-bezier(0.25, 0.8, 0.25, 1) infinite;
-}
-
-@keyframes echoPulse {
-  0% {
-    transform: translate(-50%, -50%) scale(0.92);
-    opacity: 0;
-    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.02), 0 0 0 0 var(--btn-color);
-  }
-  45% {
-    transform: translate(-50%, -50%) scale(1.06);
-    opacity: 0.18;
-    box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.02), 0 0 0 6px var(--btn-color);
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1.18);
-    opacity: 0;
-    box-shadow: 0 0 0 14px rgba(0, 0, 0, 0.02), 0 0 0 14px var(--btn-color);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .btn-echo::after {
-    animation: none;
-    opacity: 0;
-  }
-}
-
-.card-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1200;
-}
-.card-modal {
-  background: linear-gradient(180deg, #ffffff, #fcfff9);
-  width: 320px;
-  max-width: 86vw;
-  height: 460px;
-  border-radius: 12px;
-  box-shadow: 0 20px 50px rgba(2, 48, 36, 0.25);
-  padding: 18px;
-  position: relative;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-bottom: 80px;
-}
-
-.card-close {
-  position: absolute;
-  top: 8px;
-  right: 10px;
-  background: transparent;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-}
-.card-inner {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  height: 100%;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-  transition: transform 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.flip-animation {
-  transform: rotateY(180deg);
-}
-
-@keyframes cardFlip {
-  0% {
-    transform: rotateY(0deg);
-  }
-  100% {
-    transform: rotateY(180deg);
-  }
-}
-.card-left {
-  flex: 0 0 180px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.card-letter {
-  margin-top: 5rem;
-  font-size: 140px;
-  font-weight: 900;
-  color: #0b6b58;
-  font-family: "Georgia", "Times New Roman", serif;
-  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.6);
-}
-.card-right {
-  flex: 1;
-  text-align: center;
-  padding-left: 8px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.card-title {
-  margin: 0 0 6px 0;
-  color: #096b4f;
-}
-.card-text {
-  margin: 0 0 12px 0;
-  color: #334155;
-}
-.card-actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  position: absolute;
-  bottom: 40px;
-  right: 18px;
-}
-.card-voice,
-.card-ok {
-  padding: 8px 12px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-}
-.card-voice {
-  background: #06b6d4;
-  color: #fff;
-}
-.card-ok {
-  background: #10b981;
-  color: #fff;
-}
-
-/* Cantos decorativos (letra pequena) */
-.card-corner {
-  position: absolute;
-  font-size: 18px;
-  font-weight: 800;
-  color: rgba(6, 107, 88, 0.95);
-  font-family: "Georgia", serif;
-}
-.card-corner.top-left {
-  top: 10px;
-  left: 12px;
-}
-.card-corner.bottom-right {
-  bottom: 10px;
-  right: 12px;
-  transform: rotate(180deg);
-}
-
-/* Mais parecido com carta: acabamento interno */
-.card-modal:before {
-  content: "";
-  position: absolute;
-  inset: 10px;
-  border-radius: 8px;
-  pointer-events: none;
-  box-shadow: inset 0 0 0 1px rgba(6, 107, 88, 0.03);
-}
-
-/* Flip container e faces */
-.card-flip {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  transform-style: preserve-3d;
-  perspective: 1200px;
-  transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1);
-  cursor: pointer;
-}
-.card-flip.flipped {
-  transform: rotateY(180deg);
-}
-.card-face {
-  position: absolute;
-  inset: 0;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px;
-  border-radius: 10px;
-}
-.card-front {
-  z-index: 2;
-  transform: rotateY(0deg);
-}
-.card-back {
-  transform: rotateY(180deg);
-  background: linear-gradient(180deg, #fbfff9, #eafff1);
-}
-.back-image-wrap {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.back-image-wrap img {
-  max-width: 80%;
-  max-height: 70%;
-  object-fit: contain;
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  background: white;
-  padding: 8px;
-}
-.back-caption {
-  position: absolute;
-  bottom: 60px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-weight: 700;
-  color: #0b6b58;
-}
-
-@media (max-width: 480px) {
-  .card-inner {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .card-left {
-    flex: none;
-  }
-  .card-letter {
-    font-size: 96px;
-  }
-  .card-actions {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    right: auto;
-  }
-}
-</style>

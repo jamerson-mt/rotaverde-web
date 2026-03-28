@@ -17,432 +17,205 @@ const consoantesData = [
   { letra: "P", palavra: "Peixe-Boi", img: "/img/att-consoantes/peixe-boi.png" },
   { letra: "Q", palavra: "Quilombo", img: "/img/att-consoantes/quilombo.png" },
   { letra: "R", palavra: "Reciclagem", img: "/img/att-consoantes/reciclagem.png" },
-  {
-    letra: "S",
-    palavra: "Sustentabilidade",
-    img: "/img/att-consoantes/sustentabilidade.png",
-  },
+  { letra: "S", palavra: "Sustentabilidade", img: "/img/att-consoantes/sustentabilidade.png" },
   { letra: "T", palavra: "Tartaruga", img: "/img/att-consoantes/tartaruga.png" },
   { letra: "V", palavra: "Vegetação", img: "/img/att-consoantes/vegetacao.png" },
   { letra: "W", palavra: "WhatsApp", img: "/img/att-consoantes/whatsapp.png" },
   { letra: "X", palavra: "Xícara", img: "/img/att-consoantes/xicara.png" },
   { letra: "Y", palavra: "YouTube", img: "/img/att-consoantes/youtube.png" },
-  {
-    letra: "Z",
-    palavra: "Zona estuarina",
-    img: "/img/att-consoantes/zona-estuarina.png",
-  },
+  { letra: "Z", palavra: "Zona estuarina", img: "/img/att-consoantes/zona-estuarina.png" },
 ];
-const corBotao = ref("#28a745");
 
 const showCardModal = ref(false);
 const modalData = reactive({ letra: "", palavra: "", img: "" });
 const isFlipping = ref(false);
+let autoFlipTimeout = null;
 
 const consoantesFormatadas = computed(() =>
   consoantesData.map((item) =>
-    estiloAtual.value === "lowercase"
-      ? item.letra.toLowerCase()
-      : item.letra.toUpperCase()
+    estiloAtual.value === "lowercase" ? item.letra.toLowerCase() : item.letra.toUpperCase()
   )
 );
 
 function falar(letra, palavra) {
-  // 1. Limpa qualquer fala que esteja tocando agora
   window.speechSynthesis.cancel();
-  const letraTratada =
-    letra.toUpperCase() === "E" ? "É" : letra.toUpperCase() === "O" ? "Ó" : letra;
+  const letraTratada = letra.toUpperCase() === "E" ? "É" : letra.toUpperCase() === "O" ? "Ó" : letra;
   const utterance = new SpeechSynthesisUtterance(`${letraTratada} de ${palavra}`);
   utterance.lang = "pt-BR";
-  utterance.rate = 0.7; // Velocidade levemente reduzida para clareza
-  utterance.pitch = 1.1; // Um tom levemente mais agudo costuma soar menos "metálico"
+  utterance.rate = 0.7;
+  utterance.pitch = 1.1;
 
-  // 2. Tenta encontrar uma voz de alta qualidade (Google ou Microsoft)
   const vozes = window.speechSynthesis.getVoices();
-
-  // Procuramos por vozes que contenham "Google" ou "Microsoft" no nome
-  const melhorVoz =
-    vozes.find(
-      (voz) =>
-        voz.lang.includes("pt-BR") &&
-        (voz.name.includes("Google") || voz.name.includes("Natural"))
-    ) || vozes.find((voz) => voz.lang.includes("pt-BR"));
-
-  if (melhorVoz) {
-    utterance.voice = melhorVoz;
-  }
-
+  const melhorVoz = vozes.find(v => v.lang.includes("pt-BR") && (v.name.includes("Google") || v.name.includes("Natural"))) 
+                   || vozes.find(v => v.lang.includes("pt-BR"));
+  if (melhorVoz) utterance.voice = melhorVoz;
   window.speechSynthesis.speak(utterance);
 }
 
-function lerTextoBotao() {
-  const texto = estiloAtual.value === "lowercase" ? "MAIÚSCULA" : "minúscula";
-  const u = new SpeechSynthesisUtterance(texto);
-  u.lang = "pt-BR";
-  window.speechSynthesis.speak(u);
-  alternarEstilo();
-  corBotao.value = corBotao.value === "#28a745" ? "#007bff" : "#28a745";
-}
-
-function alternarEstilo() {
-  estiloAtual.value = estiloAtual.value === "normal" ? "lowercase" : "normal";
-}
-
-function playFlip() {
-  isFlipping.value = false;
-  void document.body.offsetWidth;
-  isFlipping.value = true;
-  setTimeout(() => {
-    isFlipping.value = false;
-  }, 4000);
-}
-
-function onKeyDownCard(e) {
-  if (e.key === "Escape" && showCardModal.value) closeCard();
-}
-
 function openCard(letra) {
-  const found = consoantesData.find(
-    (item) => item.letra.toLowerCase() === letra.toLowerCase()
-  );
+  const found = consoantesData.find(i => i.letra.toLowerCase() === letra.toLowerCase());
   if (found) {
-    modalData.letra = found.letra;
+    modalData.letra = estiloAtual.value === 'lowercase' ? found.letra.toLowerCase() : found.letra.toUpperCase();
     modalData.palavra = found.palavra;
     modalData.img = found.img;
-  } else {
-    modalData.letra = letra;
-    modalData.palavra = "";
-    modalData.img = "";
   }
-  falar(modalData.letra, modalData.palavra);
 
   showCardModal.value = true;
-  isFlipping.value = true;
-  setTimeout(() => {
-    isFlipping.value = false;
+  
+  // 1. Começa virado (mostrando a IMAGEM no verso)
+  isFlipping.value = true; 
+  
+  // 2. Fala assim que abre
+  falar(modalData.letra, modalData.palavra);
+
+  // 3. Troca para a LETRA (frente) automaticamente após 2 segundos
+  if (autoFlipTimeout) clearTimeout(autoFlipTimeout);
+  autoFlipTimeout = setTimeout(() => {
+    isFlipping.value = false; // Vira para a frente (Letra)
   }, 2000);
-  window.addEventListener("keydown", onKeyDownCard);
 }
 
 function closeCard() {
   showCardModal.value = false;
-  modalData.letra = "";
-  modalData.palavra = "";
-  window.removeEventListener("keydown", onKeyDownCard);
+  if (autoFlipTimeout) clearTimeout(autoFlipTimeout);
+}
+
+// Mantendo os controles de case
+function mudarParaMaiuscula() {
+  estiloAtual.value = "normal";
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(new SpeechSynthesisUtterance("Letras maiúsculas"));
+}
+
+function mudarParaMinuscula() {
+  estiloAtual.value = "lowercase";
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(new SpeechSynthesisUtterance("Letras minúsculas"));
 }
 
 onBeforeUnmount(() => {
-  window.removeEventListener("keydown", onKeyDownCard);
+  if (autoFlipTimeout) clearTimeout(autoFlipTimeout);
 });
 </script>
-
 <template>
   <div class="lista-consoantes">
-    <h2>Consoantes</h2>
-    <ul>
-      <li v-for="consoante in consoantesFormatadas" :key="consoante">
-        <button
-          id="letraStyle"
-          @click="openCard(consoante)"
-          :style="{
-            fontStyle: estiloAtual === 'italic' ? 'italic' : 'normal',
-            backgroundColor: '#f0f8ff',
-            color: '#000000',
-            fontSize: '30px',
-          }"
-        >
-          {{ consoante }}
+    <h2 class="title-main">Consoantes</h2>
+
+    <div class="controles-case">
+      <button class="btn-case" :class="{ ativo: estiloAtual === 'normal' }" @click="mudarParaMaiuscula">ABC</button>
+      <button class="btn-case" :class="{ ativo: estiloAtual === 'lowercase' }" @click="mudarParaMinuscula">abc</button>
+    </div>
+
+    <ul class="grid-horizontal">
+      <li v-for="letra in consoantesFormatadas" :key="letra">
+        <button class="btn-letra" @click="openCard(letra)">
+          {{ letra }}
         </button>
       </li>
     </ul>
 
     <div v-if="showCardModal" class="card-overlay" @click.self="closeCard">
-      <div
-        class="card-modal"
-        role="dialog"
-        aria-modal="true"
-        :aria-label="`Carta ${modalData.letra}`"
-      >
-        <button class="card-close" @click="closeCard" aria-label="Fechar">×</button>
-        <div class="card-corner top-left">{{ modalData.letra }}</div>
-        <div class="card-corner bottom-right">{{ modalData.letra }}</div>
-
-        <div
-          class="card-flip"
-          :class="{ flipped: isFlipping }"
-          @click="playFlip"
-          role="button"
-          tabindex="0"
-        >
+      <div class="card-modal">
+        <button class="card-close" @click="closeCard">×</button>
+        
+        <div class="card-flip" :class="{ flipped: isFlipping }">
           <div class="card-face card-front">
-            <div class="card-inner">
-              <div class="card-left">
-                <div class="card-letter">{{ modalData.letra }}</div>
-              </div>
-              <div class="card-right">
-                <h3 class="card-title">{{ modalData.palavra }}</h3>
-                <p class="card-text">
-                  Exemplo: <strong>{{ modalData.palavra }}</strong>
-                </p>
-              </div>
-            </div>
+             <div class="card-letter">{{ modalData.letra }}</div>
           </div>
 
           <div class="card-face card-back">
-            <div class="back-image-wrap">
-              <img
-                v-if="modalData.img"
-                :src="modalData.img"
-                :alt="modalData.palavra"
-                loading="lazy"
-              />
+            <div class="back-content">
+               <img :src="modalData.img" :alt="modalData.palavra" class="img-card" />
+               <p class="palavra-card">{{ modalData.palavra }}</p>
             </div>
-            <div class="back-caption">{{ modalData.palavra }}</div>
           </div>
         </div>
 
         <div class="card-actions">
-          <button class="card-voice" @click="falar(modalData.letra, modalData.palavra)">
-            Ouvir novamente
-          </button>
-          <button class="card-ok" @click="closeCard">Fechar</button>
+           <button class="card-voice" @click="falar(modalData.letra, modalData.palavra)">🔊 Ouvir</button>
+           <button class="card-ok" @click="closeCard">Pronto!</button>
         </div>
       </div>
     </div>
   </div>
 </template>
-
 <style scoped>
 .lista-consoantes {
   text-align: center;
-  background: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  max-width: 600px;
+  background: #f0fdfa;
+  border-radius: 30px;
+  padding: 30px;
+  max-width: 800px;
   margin: auto;
 }
 
-.lista-consoantes ul {
+.grid-horizontal {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  justify-content: center;
+  gap: 12px;
   list-style: none;
   padding: 0;
-  justify-content: center;
 }
 
-.lista-consoantes li {
-  margin: 0;
-}
-
-.lista-consoantes button {
-  font-size: 1.5rem;
-  padding: 10px 20px;
-  cursor: pointer;
-  color: #ffffff;
+.btn-letra {
+  width: 75px;
+  height: 75px;
+  background: white;
   border: none;
-  border-radius: 5px;
-  transition: background 0.3s;
-}
-
-.lista-consoantes button:hover {
-  opacity: 0.9;
-}
-
-/* reuse card modal styles from vogais for visual parity */
-.card-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1200;
-}
-.card-modal {
-  background: linear-gradient(180deg, #ffffff, #fcfff9);
-  width: 320px;
-  max-width: 86vw;
-  height: 460px;
-  border-radius: 12px;
-  box-shadow: 0 20px 50px rgba(2, 48, 36, 0.25);
-  padding: 18px;
-  position: relative;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-bottom: 80px;
-}
-.card-close {
-  position: absolute;
-  top: 8px;
-  right: 10px;
-  background: transparent;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-}
-.card-inner {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  height: 100%;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-  transition: transform 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-.card-left {
-  flex: 0 0 180px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.card-letter {
-  margin-top: 5rem;
-  font-size: 140px;
+  border-radius: 15px;
+  font-size: 36px;
   font-weight: 900;
   color: #0b6b58;
-  font-family: "Georgia", "Times New Roman", serif;
-  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.6);
-}
-.card-right {
-  flex: 1;
-  text-align: center;
-  padding-left: 8px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.card-title {
-  margin: 0 0 6px 0;
-  color: #096b4f;
-}
-.card-text {
-  margin: 0 0 12px 0;
-  color: #334155;
-}
-.card-actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  position: absolute;
-  bottom: 40px;
-  right: 18px;
-}
-.card-voice,
-.card-ok {
-  padding: 8px 12px;
-  border-radius: 10px;
-  border: none;
   cursor: pointer;
-}
-.card-voice {
-  background: #06b6d4;
-  color: #fff;
-}
-.card-ok {
-  background: #10b981;
-  color: #fff;
-}
-.card-corner {
-  position: absolute;
-  font-size: 18px;
-  font-weight: 800;
-  color: rgba(6, 107, 88, 0.95);
-  font-family: "Georgia", serif;
-}
-.card-corner.top-left {
-  top: 10px;
-  left: 12px;
-}
-.card-corner.bottom-right {
-  bottom: 10px;
-  right: 12px;
-  transform: rotate(180deg);
-}
-.card-modal:before {
-  content: "";
-  position: absolute;
-  inset: 10px;
-  border-radius: 8px;
-  pointer-events: none;
-  box-shadow: inset 0 0 0 1px rgba(6, 107, 88, 0.03);
-}
-.card-flip {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  transform-style: preserve-3d;
-  perspective: 1200px;
-  transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1);
-  cursor: pointer;
-}
-.card-flip.flipped {
-  transform: rotateY(180deg);
-}
-.card-face {
-  position: absolute;
-  inset: 0;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px;
-  border-radius: 10px;
-}
-.card-front {
-  z-index: 2;
-  transform: rotateY(0deg);
-}
-.card-back {
-  transform: rotateY(180deg);
-  background: linear-gradient(180deg, #fbfff9, #eafff1);
-}
-.back-image-wrap {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.back-image-wrap img {
-  max-width: 80%;
-  max-height: 70%;
-  object-fit: contain;
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  background: white;
-  padding: 8px;
-}
-.back-caption {
-  position: absolute;
-  bottom: 60px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-weight: 700;
-  color: #0b6b58;
+  box-shadow: 0 4px 0 #cbd5e1;
+  transition: transform 0.2s;
 }
 
-@media (max-width: 480px) {
-  .card-inner {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .card-left {
-    flex: none;
-  }
-  .card-letter {
-    font-size: 96px;
-  }
-  .card-actions {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    right: auto;
-  }
+.btn-letra:hover { transform: translateY(-3px); }
+
+/* --- CARD FLIP LOGIC --- */
+.card-modal {
+  background: white; width: 320px; height: 450px; border-radius: 24px; padding: 20px;
+  perspective: 1000px;
 }
+
+.card-flip {
+  width: 100%; height: 80%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Quando flipped é true, mostra o verso (IMAGEM) */
+.card-flip.flipped { transform: rotateY(180deg); }
+
+.card-face {
+  position: absolute; inset: 0;
+  backface-visibility: hidden;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+}
+
+/* FRENTE: Letra */
+.card-front { transform: rotateY(0deg); }
+
+/* VERSO: Imagem */
+.card-back { transform: rotateY(180deg); }
+
+.card-letter { font-size: 150px; font-weight: 900; color: #0b6b58; }
+.img-card { max-width: 200px; border-radius: 15px; }
+.palavra-card { font-size: 28px; font-weight: 900; color: #0b6b58; margin-top: 10px; }
+
+/* Modal Styles */
+.card-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 2000; }
+.card-actions { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
+.card-voice { background: #0ea5e9; color: white; border: none; padding: 10px 20px; border-radius: 12px; cursor: pointer; font-weight: bold; }
+.card-ok { background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 12px; cursor: pointer; font-weight: bold; }
+.card-close { position: absolute; top: 15px; right: 15px; font-size: 30px; border: none; background: none; cursor: pointer; }
+
+/* Controles Case */
+.controles-case { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; }
+.btn-case { padding: 10px 25px; border-radius: 50px; border: 2px solid #14b8a6; background: white; font-weight: 800; cursor: pointer; }
+.btn-case.ativo { background: #14b8a6; color: white; }
 </style>
