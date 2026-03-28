@@ -1,7 +1,8 @@
 <template>
   <div class="lista-vogais">
     <h2>Vogais</h2>
-   
+    <div class="controles-case"></div>
+
     <ul>
       <li v-for="vogal in vogaisFormatadas" :key="vogal">
         <button
@@ -10,13 +11,28 @@
             fontStyle: estiloAtual === 'italic' ? 'italic' : 'normal',
             backgroundColor: '#f0f8ff',
             color: '#000000',
-                  fontSize:'80px'
+            fontSize: '80px',
           }"
         >
           {{ vogal }}
         </button>
       </li>
     </ul>
+    <button
+      class="btn-case"
+      :class="{ ativo: estiloAtual === 'normal' }"
+      @click="mudarParaMaiuscula"
+    >
+      ABC (MAIÚSCULA)
+    </button>
+
+    <button
+      class="btn-case"
+      :class="{ ativo: estiloAtual === 'lowercase' }"
+      @click="mudarParaMinuscula"
+    >
+      abc (minúscula)
+    </button>
 
     <div v-if="showCardModal" class="card-overlay" @click.self="closeCard">
       <div
@@ -85,6 +101,29 @@ const showCardModal = ref(false);
 const modalData = reactive({ letra: "", palavra: "", img: "" });
 const isFlipping = ref(false);
 
+// Função para falar e mudar para Maiúscula
+function mudarParaMaiuscula() {
+  if (estiloAtual.value === 'normal') return; // Já está ativo
+  
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance("Mudar para letras maiúsculas");
+  utterance.lang = "pt-BR";
+  window.speechSynthesis.speak(utterance);
+  
+  estiloAtual.value = "normal";
+}
+
+// Função para falar e mudar para Minúscula
+function mudarParaMinuscula() {
+  if (estiloAtual.value === 'lowercase') return; // Já está ativo
+  
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance("Mudar para letras minúsculas");
+  utterance.lang = "pt-BR";
+  window.speechSynthesis.speak(utterance);
+  
+  estiloAtual.value = "lowercase";
+}
 const vogaisFormatadas = computed(() =>
   vogaisData.map((item) =>
     estiloAtual.value === "lowercase"
@@ -155,10 +194,10 @@ function openCard(letra) {
   }
   showCardModal.value = true;
   isFlipping.value = true;
-  falar(modalData.letra,modalData.palavra)
+  falar(modalData.letra, modalData.palavra);
   setTimeout(() => {
     isFlipping.value = false;
- }, 2000);
+  }, 2000);
   window.addEventListener("keydown", onKeyDownCard);
 }
 
@@ -191,14 +230,42 @@ onBeforeUnmount(() => {
 <style scoped>
 .lista-vogais {
   text-align: center;
-  background: #ffffff;
+  background: #0b6b58;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
   max-width: 600px;
   margin: auto;
 }
+.controles-case {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 25px;
+}
 
+.btn-case {
+  padding: 12px 20px;
+  border: 2px solid #0b6b58;
+  border-radius: 12px;
+  background: #0b6b58;
+  color: #0b6b58;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+}
+
+.btn-case.ativo {
+  background: #0b6b58;
+  color: white;
+  box-shadow: 0 4px 12px rgba(11, 107, 88, 0.3);
+  transform: scale(1.05);
+}
+
+.btn-case:hover:not(.ativo) {
+  background: #f0fdf4;
+}
 .lista-vogais ul {
   display: flex;
   flex-wrap: wrap;

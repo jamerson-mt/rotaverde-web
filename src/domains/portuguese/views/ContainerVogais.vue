@@ -16,6 +16,7 @@ const toggleInfoCard = () => {
     <ion-content :fullscreen="true">
       <Header />
       <TitleCategories title="atividade" route="/att/roadMapletras" />
+      
       <lista-vogais />
     </ion-content>
     <div id="navButton">
