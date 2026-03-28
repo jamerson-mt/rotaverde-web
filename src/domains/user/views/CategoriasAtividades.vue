@@ -11,7 +11,7 @@ import TitleCategories from "../components/TitleCategories.vue";
       <div>
         <Header />
       </div>
-      <TitleCategories title="Módulos" route="/categorias" />
+      <TitleCategories title="Módulos" route="/home" />
       <div class="containerModules">
         <CardLevels
           fala1="modulo1pt"

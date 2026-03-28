@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { defineProps, reactive, ref, toRefs, watch, onBeforeUnmount } from "vue";
+import TitleCategories from "@/domains/user/components/TitleCategories.vue";
+import { reactive, ref, toRefs, watch, onBeforeUnmount } from "vue";
 
 const props = defineProps<{
   quadro: {
@@ -41,17 +42,17 @@ watch(quadro, () => {
 
 const selectedWord = ref<null | { image: string; description: string }>(null);
 
-let selectedWordTimeout: number | null = null
+let selectedWordTimeout: number | null = null;
 function clearSelectedWordTimer() {
   if (selectedWordTimeout !== null) {
-    clearTimeout(selectedWordTimeout)
-    selectedWordTimeout = null
+    clearTimeout(selectedWordTimeout);
+    selectedWordTimeout = null;
   }
 }
 
 const todasPalavrasEncontradas = ref(false);
 
-const confirme = (() => {
+const confirme = () => {
   if (o1 && o2 && o3 && o4 && o5 && o6) {
     todasPalavrasEncontradas.value = true;
     document.querySelectorAll(".aviso").forEach(function (valor) {
@@ -59,15 +60,38 @@ const confirme = (() => {
     });
     setTimeout(() => {
       props.finalizarAtividade();
+        window.location.href = "/att/roadmap";
+      window.speechSynthesis.cancel();
     }, 2000);
   }
-});
+};
 
 const pronunciar = (texto: string, descricao?: string) => {
-  const synth = window.speechSynthesis;
-  const utterance = new SpeechSynthesisUtterance(texto + (descricao ? `. ${descricao}` : ""));
+  // 1. Limpa qualquer fala que esteja tocando agora
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(
+    texto + (descricao ? `. ${descricao}` : "")
+  );
   utterance.lang = "pt-BR";
-  synth.speak(utterance);
+  utterance.rate = 0.7; // Velocidade levemente reduzida para clareza
+  utterance.pitch = 1.1; // Um tom levemente mais agudo costuma soar menos "metálico"
+
+  // 2. Tenta encontrar uma voz de alta qualidade (Google ou Microsoft)
+  const vozes = window.speechSynthesis.getVoices();
+
+  // Procuramos por vozes que contenham "Google" ou "Microsoft" no nome
+  const melhorVoz =
+    vozes.find(
+      (voz) =>
+        voz.lang.includes("pt-BR") &&
+        (voz.name.includes("Google") || voz.name.includes("Natural"))
+    ) || vozes.find((voz) => voz.lang.includes("pt-BR"));
+
+  if (melhorVoz) {
+    utterance.voice = melhorVoz;
+  }
+
+  window.speechSynthesis.speak(utterance);
 };
 
 const check = (option: number) => {
@@ -75,19 +99,21 @@ const check = (option: number) => {
   const palavra = props.palavras[palavraKeys[option - 1]];
 
   if (palavra) {
-    document.querySelectorAll(`.${palavra.letters.join("").toLowerCase()}`).forEach(function (valor) {
-      valor.setAttribute("style", "background-color:gray; color:white;");
-    });
+    document
+      .querySelectorAll(`.${palavra.letters.join("").toLowerCase()}`)
+      .forEach(function (valor) {
+        valor.setAttribute("style", "background-color:gray; color:white;");
+      });
 
     selectedWord.value = { image: palavra.image, description: palavra.description };
     pronunciar(palavra.letters.join(""), palavra.description);
-      // inicia timer para fechar automaticamente após 10s
-      clearSelectedWordTimer()
-      selectedWordTimeout = window.setTimeout(() => {
-        selectedWord.value = null
-        selectedWordTimeout = null
-      }, 10000)
-      confirme();
+    // inicia timer para fechar automaticamente após 10s
+    clearSelectedWordTimer();
+    selectedWordTimeout = window.setTimeout(() => {
+      selectedWord.value = null;
+      selectedWordTimeout = null;
+    }, 10000);
+    confirme();
   }
 };
 
@@ -162,23 +188,25 @@ const verificaCombinacao = () => {
 
 const acenderLetra = (linhaIndex: number, celulaIndex: number) => {
   letraAcendida[linhaIndex][celulaIndex] = !letraAcendida[linhaIndex][celulaIndex];
-  pronunciar(props.quadro[`line${linhaIndex + 1}` as keyof typeof props.quadro][celulaIndex]);
+  pronunciar(
+    props.quadro[`line${linhaIndex + 1}` as keyof typeof props.quadro][celulaIndex]
+  );
   verificaCombinacao();
 };
 
 const closeCard = () => {
   selectedWord.value = null;
-  clearSelectedWordTimer()
+  clearSelectedWordTimer();
 };
 
 onBeforeUnmount(() => {
-  clearSelectedWordTimer()
-})
+  clearSelectedWordTimer();
+});
 </script>
 
 <template>
   <div class="content">
-    <h1>Caça Palavras</h1>
+    <TitleCategories title="" route="att/roadMapPalavra" />
     <div class="quadro">
       <div
         v-for="(linha, linhaIndex) in [

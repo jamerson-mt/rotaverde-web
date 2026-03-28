@@ -16,7 +16,7 @@ const mostrarStatus = ref(false);
         <Header />
       </div>
 
-      <TitleCategories title="Português" route="/categorias" />
+      <TitleCategories title="voltar" route="/categorias" />
 
       <div class="container">
         <div

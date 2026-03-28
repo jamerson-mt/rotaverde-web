@@ -1,13 +1,7 @@
 <template>
   <div class="lista-vogais">
     <h2>Vogais</h2>
-    <button
-      class="btn-toggle-case btn-echo"
-      @click="lerTextoBotao"
-      :style="{ backgroundColor: corBotao, color: '#ffffff', '--btn-color': corBotao }"
-    >
-      {{ estiloAtual === "lowercase" ? "minúscula" : "MAIÚSCULA" }}
-    </button>
+   
     <ul>
       <li v-for="vogal in vogaisFormatadas" :key="vogal">
         <button
@@ -16,6 +10,7 @@
             fontStyle: estiloAtual === 'italic' ? 'italic' : 'normal',
             backgroundColor: '#f0f8ff',
             color: '#000000',
+                  fontSize:'80px'
           }"
         >
           {{ vogal }}
@@ -65,7 +60,7 @@
 
         <div class="card-actions">
           <button class="card-voice" @click="falar(modalData.letra, modalData.palavra)">
-            Ouvir
+            Ouvir novamente
           </button>
           <button class="card-ok" @click="closeCard">Fechar</button>
         </div>
@@ -160,9 +155,10 @@ function openCard(letra) {
   }
   showCardModal.value = true;
   isFlipping.value = true;
+  falar(modalData.letra,modalData.palavra)
   setTimeout(() => {
     isFlipping.value = false;
-  }, 500);
+ }, 2000);
   window.addEventListener("keydown", onKeyDownCard);
 }
 

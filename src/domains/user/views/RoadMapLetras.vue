@@ -17,7 +17,7 @@ const go = (rota: string) => {
         <Header />
       </div>
 
-      <TitleCategories title="Português" route="/categorias" />
+      <TitleCategories title="voltar" route="/categorias" />
 
       <div class="container">
         <div id="comp5" class="component component5">

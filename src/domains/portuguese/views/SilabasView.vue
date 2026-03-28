@@ -2,6 +2,7 @@
 import { ref, watch, onMounted, onBeforeUnmount } from "vue";
 import Header from '@/domains/reasoning/components/HeaderTop.vue';
 import { getUserId } from "@/utils/localStorageUtils";
+import TitleCategories from "@/domains/user/components/TitleCategories.vue";
 
 const wordsData = [
   { id: "vitoria-regia", img:"vitoria-regia.png", word: "VITÓRIA-RÉGIA", syllables: ["VI", "TÓ", "RI", "A", "-RÉ", "GI", "A"], definition: "Uma planta aquática gigante da Amazônia, com folhas circulares que podem chegar a mais de 2 metros de diâmetro." },
@@ -193,7 +194,7 @@ initializeGame();
     <div><Header /></div>
 
   <div class="container">
-    <h1 class="title">Aventura Sustentável</h1>
+    <TitleCategories title="" route="/att/roadMapPalavra"/>
     <h2 class="subtitle">Quebra-Cabeças de Palavras</h2>
     <div class="image-container" v-if="currentWordData.img">
       <img
