@@ -392,7 +392,7 @@ onBeforeUnmount(() => {
         <button
           class="btn btn-listen"
           @click="readFullSentence"
-          title="Ouvir a frase completa"
+          title="Ouvir a o texto completo"
         >
           <svg
             width="20"
@@ -423,7 +423,7 @@ onBeforeUnmount(() => {
               stroke-linejoin="round"
             />
           </svg>
-          Ouvir frase
+          Ouvir texto
         </button>
         <button class="btn btn-primary" @click="checkAnswers">Verificar respostas</button>
         <!-- <button class="btn btn-secondary" @click="resetAll">Reiniciar</button> -->
