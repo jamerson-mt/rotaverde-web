@@ -67,7 +67,7 @@ export const exercise: Exercise[] = [
     },
     {
         title: "Selecione a palavra correspondente a imagem",
-        image: "../img/canoapesca.jpg",
+        image: "../img/canoa.jpg",
         options: {
             option1: "canoa",
             option2: "canoua",

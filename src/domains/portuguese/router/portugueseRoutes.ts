@@ -1,8 +1,8 @@
 import { RouteRecordRaw } from 'vue-router';
 import CacaPalavras from '../views/CacaPalavras.vue';
 import Silabario from '../views/Silabario.vue';
-import EscritaPort from '../views/Escrita.vue';
-import Letras from '../views/Letras.vue';
+import EscritaPort from '../views/EscritaAtividade.vue';
+import Letras from '../views/LetrasAtividade.vue';
 import Silabas from '../views/SilabasView.vue';
 import Consoantes from '../views/ContainerConsoantes.vue';
 import Vogais from '../views/ContainerVogais.vue';

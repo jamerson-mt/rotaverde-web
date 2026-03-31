@@ -5,6 +5,7 @@ import Header from "@/domains/reasoning/components/HeaderTop.vue";
 import FalarComponent from "@/components/specific/FalarComponent.vue";
 import { inject, ref } from "vue";
 import { getUserData } from "@/utils/localStorageUtils";
+import TitleCategories from "../components/TitleCategories.vue";
 
 const isPlaying = inject("isPlaying"); // Certifique-se de que o estado está sendo injetado corretamente
 
@@ -54,6 +55,7 @@ function stopAudio() {
     <ion-content :fullscreen="true">
       <div>
         <Header />
+        <TitleCategories title="Voltar" route="/"/>
       </div>
      
 
