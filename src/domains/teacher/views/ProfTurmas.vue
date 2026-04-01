@@ -2,7 +2,6 @@
 import ListarAlunos from "../components/ListarAlunos.vue";
 import TitleCategories from "@/domains/user/components/TitleCategories.vue";
 import { getUserId } from "@/utils/localStorageUtils";
- import { ref } from "vue";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default {
@@ -120,7 +119,7 @@ export default {
 
 <template>
   <div class="prof-turmas">
-    <TitleCategories title="Criar Turma" route="teacher/home" />
+    <TitleCategories title="Criar Turma" route="/professor" />
     <h1>Criar Turma</h1>
     <div class="step-indicator">
       <span :class="{ active: step === 1 }">Etapa 1: Dados da Turma</span>

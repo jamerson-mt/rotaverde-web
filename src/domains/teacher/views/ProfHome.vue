@@ -89,7 +89,7 @@ onMounted(() => {
       <ion-content>
         <div class="content">
           <div class="areas">
-            <TitleCategories title="Painel Professor" route="teste" />
+            <TitleCategories title="Painel Professor" route="/professor" />
 
             <div class="title">
               <h1>Turmas</h1>
