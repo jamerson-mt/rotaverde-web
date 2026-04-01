@@ -1,100 +1,165 @@
-<template>
-  <p class="competencia" @click.stop="togglePopup">{{ text }}</p>
-  <div v-if="isPopupVisible" class="popup-overlay" @click="togglePopup">
-    <div class="popup" @click.stop>
-      <p class="popup-title">Detalhes da Competência</p>
-      <p class="popup-content">{{ descricaoCompetencia }}</p>
-      <button @click="togglePopup">Fechar</button>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { defineProps, ref } from "vue";
-import competencias from "../data/competencias.json";
+import { ref, computed } from "vue";
+import listaCompetencias from "../data/competencias.json";
 
-const props = defineProps({
-  text: {
-    type: String,
-    required: true,
-  }
+interface Props {
+  text: string;
+}
+
+const props = defineProps<Props>();
+const isPopupVisible = ref(false);
+
+// Busca a descrição apenas quando o 'text' mudar ou na primeira montagem
+const descricaoCompetencia = computed(() => {
+  const competencia = listaCompetencias.find(
+    c => c.codigo.toLowerCase() === props.text.toLowerCase()
+  );
+  return competencia ? competencia.descricao : "Descrição não encontrada.";
 });
 
-const isPopupVisible = ref(false);
-const descricaoCompetencia = ref<string | null>(null);
-
 const togglePopup = () => {
-  if (!isPopupVisible.value) {
-    const competencia = competencias.find(
-      c => c.codigo.toLowerCase() === props.text.toLowerCase()
-    );
-    descricaoCompetencia.value = competencia ? competencia.descricao : "Descrição não encontrada.";
-  }
   isPopupVisible.value = !isPopupVisible.value;
 };
 </script>
 
+<template>
+  <span class="competencia-tag" @click.stop="togglePopup">
+    {{ text }}
+  </span>
+
+  <Teleport to="body">
+    <Transition name="fade">
+      <div v-if="isPopupVisible" class="popup-overlay" @click="togglePopup">
+        <div class="popup-card" @click.stop>
+          <header class="popup-header">
+            <h3>{{ text }}</h3>
+            <button class="close-btn" @click="togglePopup">&times;</button>
+          </header>
+          
+          <div class="popup-body">
+            <p class="label">Descrição da BNCC:</p>
+            <p class="content">{{ descricaoCompetencia }}</p>
+          </div>
+
+          <footer class="popup-footer">
+            <button class="confirm-btn" @click="togglePopup">Entendido</button>
+          </footer>
+        </div>
+      </div>
+    </Transition>
+  </Teleport>
+</template>
+
 <style scoped>
-.competencia {
+.competencia-tag {
+  display: inline-block;
   font-family: "DM Sans", sans-serif;
-  font-weight: 500;
-  font-style: medium;
-  font-size: 15px;
+  font-weight: 600;
+  font-size: 13px;
   color: #0f3d3e;
   background-color: #ecc055;
-  text-align: center;
-  border-radius: 5px;
-  padding: 5px 5px;
-  white-space: nowrap;
+  border-radius: 4px;
+  padding: 4px 8px;
   cursor: pointer;
+  transition: filter 0.2s;
 }
 
+.competencia-tag:hover {
+  filter: brightness(0.9);
+}
+
+/* Overlay ocupando a tela toda */
 .popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-}
-
-.popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 80%;
-  height: 60%;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  padding: 20px;
-  z-index: 1000;
-  color: #0f3d3e;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(2px);
 }
 
-.popup-title {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 10px;
+.popup-card {
+  background: white;
+  width: 90%;
+  max-width: 450px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  animation: scaleIn 0.3s ease-out;
 }
 
-.popup-content {
-  font-size: 14px;
-  text-align: center;
-  margin-bottom: 20px;
+.popup-header {
+  padding: 15px 20px;
+  background: #f8f9fa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
 }
 
-.popup button {
-  padding: 5px 10px;
-  background-color: #ecc055;
+.popup-header h3 {
+  margin: 0;
+  color: #249b9b;
+  font-size: 1.2rem;
+}
+
+.close-btn {
+  background: none;
   border: none;
-  border-radius: 5px;
+  font-size: 24px;
   cursor: pointer;
+  color: #999;
+}
+
+.popup-body {
+  padding: 20px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.content {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #333;
+}
+
+.popup-footer {
+  padding: 15px 20px;
+  text-align: right;
+  border-top: 1px solid #eee;
+}
+
+.confirm-btn {
+  background-color: #249b9b;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Animações */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 </style>

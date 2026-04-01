@@ -36,6 +36,14 @@ defineProps({
     type: String,
     required: false,
   },
+  competencia3: {
+    type: String,
+    required: false,
+  },
+  competencia4: {
+    type: String,
+    required: false,
+  },
   time: {
     type: String,
     required: false,
@@ -66,8 +74,10 @@ function handleCardClick(card: string, module: string, activity: string, link: s
         <p class="title">{{ title }}</p>
         <p class="descripition">{{ descripition }}</p>
         <div class="competencias">
-          <Competencia v-if="competencia" :text="competencia" />
-          <Competencia v-if="competencia2" :text="competencia2" />
+          <Competencia v-if="competencia" :text="competencia" :descricao="descripition"/>
+          <Competencia v-if="competencia2" :text="competencia2" :descricao="descripition" />
+          <Competencia v-if="competencia3" :text="competencia3" :descricao="descripition"/>
+          <Competencia v-if="competencia4" :text="competencia4" :descricao="descripition" />
         </div>
       </div>
     </div>

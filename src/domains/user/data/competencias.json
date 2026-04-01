@@ -1,52 +1,74 @@
 [
-    {
-        "codigo": "ef01lp01",
-        "descricao": "Reconhecer a escrita do próprio nome em diferentes contextos."
-    },
-    {
-        "codigo": "ef01lp02",
-        "descricao": "Identificar a relação entre a fala e a escrita, reconhecendo as letras do alfabeto."
-    },
-    {
-        "codigo": "ef01lp03",
-        "descricao": "Compreender a função social da escrita em diferentes gêneros textuais."
-    },
-    {
-        "codigo": "ef01lp04",
-        "descricao": "Produzir textos simples com base em modelos conhecidos."
-    },
-    {
-        "codigo": "ef02lp03",
-        "descricao": "Ampliar a compreensão de textos narrativos e informativos."
-    },
-    {
-        "codigo": "ef03lp04",
-        "descricao": "Desenvolver estratégias de leitura para interpretar textos variados."
-    },
-    {
-        "codigo": "ef04lp01",
-        "descricao": "Planejar e produzir textos adequados a diferentes finalidades e públicos."
-    },
-    {
-        "codigo": "ef05lp02",
-        "descricao": "Utilizar recursos linguísticos para organizar ideias em textos escritos."
-    },
-    {
-        "codigo": "ef06lp03",
-        "descricao": "Analisar textos argumentativos, identificando pontos de vista e argumentos."
-    },
-    {
-        "codigo": "ef07lp04",
-        "descricao": "Produzir textos dissertativos com coesão e coerência."
-    },
-    {
-        "codigo": "ef08lp05",
-        "descricao": "Interpretar textos literários, considerando seus contextos históricos e culturais."
-    },
-    {
-        "codigo": "ef09lp06",
-        "descricao": "Elaborar projetos de pesquisa com base em temas de interesse."
-    }
+  {
+    "codigo": "ef01lp01",
+    "descricao": "Reconhecer a escrita do próprio nome em diferentes contextos."
+  },
+  {
+    "codigo": "ef01lp02",
+    "descricao": "Identificar a relação entre a fala e a escrita, reconhecendo as letras do alfabeto."
+  },
+  {
+    "codigo": "ef01lp03",
+    "descricao": "Compreender a função social da escrita em diferentes gêneros textuais."
+  },
+  {
+    "codigo": "ef01lp04",
+    "descricao": "Produzir textos simples com base em modelos conhecidos."
+  },
+  {
+    "codigo": "ef02lp01",
+    "descricao": "Expressar-se em situações de intercâmbio oral com clareza, preocupando-se em ser compreendido pelo interlocutor e usando a palavra com tom de voz adequado."
+  },
+  {
+    "codigo": "ef02lp02",
+    "descricao": "Segmentar palavras em sílabas e remover ou substituir sílabas iniciais, mediais ou finais para criar novas palavras."
+  },
+  {
+    "codigo": "ef02lp03",
+    "descricao": "Ampliar a compreensão de textos narrativos e informativos."
+  },
+  {
+    "codigo": "ef02lp06",
+    "descricao": "Perceber o princípio acrofônico e a relação entre o som (fonema) e a letra (grafema)."
+  },
+  {
+    "codigo": "ef02lp08",
+    "descricao": "Segmentar corretamente as palavras de um texto, respeitando os espaços entre elas."
+  },
+  {
+    "codigo": "ef03lp04",
+    "descricao": "Desenvolver estratégias de leitura para interpretar textos variados."
+  },
+  {
+    "codigo": "ef04lp01",
+    "descricao": "Planejar e produzir textos adequados a diferentes finalidades e públicos."
+  },
+  {
+    "codigo": "ef05lp02",
+    "descricao": "Utilizar recursos linguísticos para organizar ideias em textos escritos."
+  },
+  {
+    "codigo": "ef06lp03",
+    "descricao": "Analisar textos argumentativos, identificando pontos de vista e argumentos."
+  },
+  {
+    "codigo": "ef07lp04",
+    "descricao": "Produzir textos dissertativos com coesão e coerência."
+  },
+  {
+    "codigo": "ef08lp05",
+    "descricao": "Interpretar textos literários, considerando seus contextos históricos e culturais."
+  },
+  {
+    "codigo": "ef09lp06",
+    "descricao": "Elaborar projetos de pesquisa com base em temas de interesse."
+  },
+  {
+    "codigo": "ef01lp16",
+    "descricao": "Ler e compreender, em colaboração com os colegas e com a ajuda do professor, quadras, quadrinhas, parlendas, trava-línguas, cantigas, entre outros textos do campo da vida cotidiana."
+  },
+  {
+    "codigo": "ef12lp04",
+    "descricao": "Ler e compreender, em colaboração com os colegas e com a ajuda do professor, fotolegendas de fotos, notícias, manchetes e lides em jornais, revistas e sites infantis."
+  }
 ]
-
-
