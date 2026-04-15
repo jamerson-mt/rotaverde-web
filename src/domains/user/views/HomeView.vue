@@ -35,7 +35,7 @@ function handleFalar(language: string, subject: string, module: string, route: s
 }
 
 function goPage(link: string) {
-  window.location.href=link;
+  window.location.href = link;
 }
 
 function stopAudio() {
@@ -55,15 +55,14 @@ function stopAudio() {
     <ion-content :fullscreen="true">
       <div>
         <Header />
-        <TitleCategories title="Voltar" route="/"/>
+        <TitleCategories title="Voltar" route="/" />
       </div>
-     
 
       <div id="container">
         <Card
           v-if="!isProfessor"
           @click="handleFalar('pt', 'modulos1', 'seusmodulos', '/categorias')"
-          title="Módulos"
+          title="Missões"
           image="img/iconesSustentabilidade/arvore.png"
           link="/home?q=pt"
           link2="/att/roadMap"
@@ -75,7 +74,7 @@ function stopAudio() {
           title="formulários"
           image="img/list/list1.jpg"
           link="/forms?q=pt"
-          bgc="#fff" 
+          bgc="#fff"
         />
         <!-- Exibe o card do dashboard apenas se o usuário for professor -->
         <Card
@@ -86,8 +85,7 @@ function stopAudio() {
           link="/profesor"
           bgc="#fff"
         />
-        
-        
+
         <!-- Certifique-se de que o componente está sempre presente -->
         <FalarComponent ref="falarComponent" />
 
@@ -96,8 +94,6 @@ function stopAudio() {
           <img src="/public/img/speaker.gif" alt="Executando áudio" />
           <button class="cancel-button" @click="stopAudio">Cancelar</button>
         </div>
-        
-
       </div>
     </ion-content>
   </ion-page>

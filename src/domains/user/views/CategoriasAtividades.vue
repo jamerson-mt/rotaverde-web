@@ -11,12 +11,12 @@ import TitleCategories from "../components/TitleCategories.vue";
       <div>
         <Header />
       </div>
-      <TitleCategories title="Módulos" route="/home" />
+      <TitleCategories title="Missãos" route="/home" />
       <div class="containerModules">
         <CardLevels
           fala1="modulo1pt"
-          title="Módulo 1"
-          descripition="Conheça as letras do alfabeto e seus sons"
+          title="Missão 1"
+          descripition="Inciais das palavras: Identificar a letra inicial correspondente às imagens "
           competencia="EF01LP01"
           competencia2="EF01LP02"
           image="img/icons/letras.png"
@@ -27,8 +27,8 @@ import TitleCategories from "../components/TitleCategories.vue";
 
         <CardLevels
           fala1="modulo2"
-          title="Módulo 2"
-          descripition="Selecione e escreva palavras iniciais"
+          title="Missão 2"
+          descripition="Escrita correta: associar imagem e palavra à grafia adequada"
           competencia="EF01LP04"
           image="img/icons/letras.png"
           link="/att/roadMapAtividade"
@@ -39,12 +39,11 @@ import TitleCategories from "../components/TitleCategories.vue";
 
         <CardLevels
           fala1="modulo3"
-          title="Módulo 3"
-          descripition="Construa palavras com temas relacionados à sustentabilidade"
+          title="Missão 3"
+          descripition="Caça palavras: localizar palavras relacionadas à sustentabilidade, ampliando o vocabulário"
           competencia="EF02LP01"
           competencia2="EF02LP02"
           competencia3="EF02LP06"
-          competencia4="EF02LP08"
           image="img/icons/frases.png"
           link="/att/roadMapPalavra"
           atividade="Português"
@@ -54,8 +53,8 @@ import TitleCategories from "../components/TitleCategories.vue";
 
         <CardLevels
           fala1="modulo4"
-          title="Módulo 4"
-          descripition="Desenvolva textos sobre preservação ambiental"
+          title="Missão 4"
+          descripition="Leitura e interpretação: ler pequenos textos e completar lacunas e/ou responder questões."
           competencia="EF01LP16"
           competencia2="EF12LP04"
           image="img/icons/textos.png"
@@ -96,7 +95,7 @@ import TitleCategories from "../components/TitleCategories.vue";
   align-items: center;
   justify-content: flex-start; /* Ajustado para alinhar itens ao início */
   margin-top: 1rem;
-  gap:1.5em;
+  gap: 1.5em;
   padding-top: 0.5rem;
   overflow-y: auto; /* Permite rolagem vertical */
   padding-right: 0.5rem; /* Espaço para evitar sobreposição com a barra de rolagem */
@@ -104,7 +103,6 @@ import TitleCategories from "../components/TitleCategories.vue";
   scrollbar-color: #249b9b #f0f0f0; /* Cor da barra e do fundo */
   border: 0px solid #1e7a7a; /* Borda leve para destacar a área */
   border-radius: 10px; /* Bordas arredondadas */
- 
 }
 
 .content > * {
