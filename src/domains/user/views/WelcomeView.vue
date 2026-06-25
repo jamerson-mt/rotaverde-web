@@ -110,7 +110,7 @@ function handleLoginClick() {
               $refs.falarComponent.falar(
                 'welcome',
                 'boasvindas',
-                'missoeseformularios',
+                'missoeseformulario',
                 '/home'
               )
             "
