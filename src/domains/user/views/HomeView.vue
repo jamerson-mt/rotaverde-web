@@ -61,7 +61,14 @@ function stopAudio() {
       <div id="container">
         <Card
           v-if="!isProfessor"
-          @click="handleFalar('pt', 'modulos1', 'seusmodulos', '/categorias')"
+          @click="
+            handleFalar(
+              'pt',
+              'visualizarmissoes',
+              'selecioneumadasmissoes',
+              '/categorias'
+            )
+          "
           title="Missões"
           image="img/iconesSustentabilidade/arvore.png"
           link="/home?q=pt"
